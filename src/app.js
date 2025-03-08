@@ -1,3 +1,12 @@
 const express = require('express');
 const app = express();
-app.listen(3000, () => console.log('Serveur en marche sur http://localhost:3000'));
+const indexRoutes = require('./routes/index');
+
+app.set('view engine', 'ejs');
+
+app.use('/', indexRoutes);
+
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`Serveur démarré sur http://localhost:${PORT}`);
+});
