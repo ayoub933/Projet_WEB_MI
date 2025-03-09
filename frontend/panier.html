@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Votre Panier</title>
+    <link rel="stylesheet" href="css/panier.css">
+</head>
+<body>
+
+    <header>
+        <h1>Votre Panier</h1>
+        <nav>
+            <a href="accueil.html">Accueil</a>
+            <a href="article.html">Article</a>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Articles dans le panier</h2>
+        <div id="contenu-panier" class="panier-container">
+            <!-- Les articles du panier seront affichés ici -->
+        </div>
+
+        <div class="total">
+            <p>Total: <span id="total-prix">0</span> €</p>
+            <button id="vider-panier">Vider le panier</button>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2025 Vente de Vêtements - Tous droits réservés.</p>
+    </footer>
+
+    <!-- Scripts MVC -->
+    <script src="js/model.js"></script>
+    <script src="js/view.js"></script>
+    <script src="js/controller.js"></script>
+</body>
+</html>
