@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 
+// TODO: Rendre l'URL de la base de données configurable avec dotenv
+// TODO: Ajouter un mécanisme de reconnexion automatique en cas d'échec
+
 const connectDB = async () => {
     try {
         await mongoose.connect('mongodb://localhost:27017/ecommerce', {
