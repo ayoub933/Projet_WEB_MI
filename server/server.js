@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const mongoose = require('./server/config/db'); // Connexion à la BDD
+const mongoose = require('./config/db'); // Connexion à la BDD
 
 // TODO: Ajouter la gestion des sessions pour l'authentification
 // TODO: Ajouter la gestion des erreurs globales
@@ -11,8 +11,8 @@ app.use(express.json()); // Middleware pour JSON
 app.use(cors()); // Middleware CORS
 
 // Import des routes
-const productRoutes = require('./server/routes/productRoutes');
-const userRoutes = require('./server/routes/userRoutes');
+const productRoutes = require('./routes/productRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);

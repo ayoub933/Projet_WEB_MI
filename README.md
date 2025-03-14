@@ -1,5 +1,8 @@
 
 ---
+requirement  : 
+npm init -y  # Initialise un projet Node.js
+npm install express mongoose cors dotenv  # Installe les dépendances principales
 
 ## **🌍 Vue d’ensemble de la structure**
 Ton projet est divisé en **trois parties principales** :
