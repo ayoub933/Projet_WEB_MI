@@ -1,36 +1,17 @@
-// model.js
-class Produit {
-    constructor(id, nom, prix, image) {
-        this.id = id;
-        this.nom = nom;
-        this.prix = prix;
-        this.image = image;
-    }
-}
+// backend/model.js
+const db = require('../../backend/database');
+const bcrypt = require('bcrypt');
 
-// Liste des produits (simulée avant backend)
-const produits = [
-    new Produit(1, "T-Shirt Bleu", 20, "images/tshirt_bleu.jpg"),
-    new Produit(2, "Sweat Noir", 35, "images/sweat_noir.jpg"),
-    new Produit(3, "Jean Slim", 45, "images/jean_slim.jpg"),
-];
+const findUserByUsername = async (username) => {
+  const { rows } = await db.query('SELECT * FROM utilisateurs WHERE nom = $1', [username]);
+  return rows[0];
+};
 
-// Gestion du panier avec LocalStorage
-class Panier {
-    static getPanier() {
-        return JSON.parse(localStorage.getItem("panier")) || [];
-    }
+const comparePassword = async (plainPassword, hash) => {
+  return await bcrypt.compare(plainPassword, hash);
+};
 
-    static ajouterAuPanier(produit) {
-        let panier = this.getPanier();
-        panier.push(produit);
-        localStorage.setItem("panier", JSON.stringify(panier));
-    }
-
-    static supprimerDuPanier(id) {
-        let panier = this.getPanier().filter(item => item.id !== id);
-        localStorage.setItem("panier", JSON.stringify(panier));
-    }
-}
-
-export { produits, Panier };
+module.exports = {
+  findUserByUsername,
+  comparePassword
+};

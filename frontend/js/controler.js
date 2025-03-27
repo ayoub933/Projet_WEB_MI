@@ -1,36 +1,21 @@
-// controller.js
-import { produits, Panier } from "./model.js";
-import { View } from "./view.js";
+// frontend/js/controler.js
+// Ce fichier est EXCLUSIVEMENT pour le code du navigateur (client)
+// Ne jamais utiliser require, module.exports, etc ici !
 
-class Controller {
-    static ajouterProduit(id) {
-        let produit = produits.find(p => p.id === id);
-        if (produit) {
-            Panier.ajouterAuPanier(produit);
-            alert("Produit ajouté !");
-        }
+fetch('/api/user')
+  .then(res => res.json())
+  .then(data => {
+    const nav = document.getElementById('nav-connexion');
+    const bienvenue = document.getElementById('bienvenue');
+
+    if (data.isLoggedIn) {
+      bienvenue.textContent = `Bienvenue, ${data.username}`;
+      nav.innerHTML = `
+        <a href="/deconnexion" class="connexion-btn" style="color: white; background-color: red; padding: 6px 12px; border-radius: 6px;">
+          Déconnexion
+        </a>
+      `;
     }
+  });
 
-    static supprimerProduit(index) {
-        Panier.supprimerDuPanier(index);
-        View.afficherPanier();
-    }
-}
-
-// Charger les vues après le chargement du DOM
-document.addEventListener("DOMContentLoaded", () => {
-    if (document.getElementById("produits")) {
-        View.afficherProduits();
-    }
-
-    if (document.getElementById("contenu-panier")) {
-        View.afficherPanier();
-    }
-});
-
-document.getElementById("vider-panier").addEventListener("click", () => {
-    localStorage.removeItem("panier");
-    View.afficherPanier();
-});
-
-export { Controller };
+// Tu pourras ajouter ici des fonctions client pour le panier, etc.

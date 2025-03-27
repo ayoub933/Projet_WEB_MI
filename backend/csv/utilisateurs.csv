@@ -1,0 +1,4 @@
+nom,mot_de_passe,argent,roles,date_naissance,dateinscription
+gerante,gerante123,1500,1,1980-11-27,2024-04-11
+Test,test,0,0,1987-01-12,2024-04-11
+Amine,user01,1500,0,2003-10-12,2024-04-10

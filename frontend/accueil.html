@@ -1,43 +1,48 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vente de vêtements</title>
-    <link rel="stylesheet" href="css/accueil.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vente de vêtements</title>
+  <link rel="stylesheet" href="css/accueil.css">
+  <script type="module" src="js/controler.js"></script>
 </head>
 <body>
-    <header>
-        <h1>Vente de Vêtements</h1>
-        <nav>
-            <a href="panier.html">Panier</a>
-            <a href="article.html">Article</a>
-        </nav>
-    </header>
-
-    <main>
-        <h2>Nos Produits</h2>
-        <div id="produits" class="produit-container"></div>
-        
-        <h2>Votre Panier</h2>
-        <ul id="panier" class="panier-container"></ul>
-
-        <div class="produit">
-            <img src="images/pantalon-gris.jpg" alt="Produit 1">
-            <h3>Pantalon gris</h3>
-            <p>Prix: 19.99€</p>
-            <button class="ajouter-panier">Ajouter au panier</button>
+  <header>
+    <h1>Vente de Vêtements</h1>
+    <nav style="display: flex; justify-content: space-between; align-items: center;">
+      <div class="nav-links">
+        <a href="panier.html">Panier</a>
+        <a href="article.html">Article</a>
+      </div>
+    
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span id="bienvenue" style="font-weight: bold;"></span>
+        <div class="nav-connexion" id="nav-connexion">
+          <a href="connexion.html" class="connexion-btn">Connexion</a>
         </div>
-        
-    </main>
+      </div>
+    </nav>    
+  </header>
 
-    <footer>
-        <p>© 2025 Vente de Vêtements - Tous droits réservés.</p>
-    </footer>
+  <main>
+    <h2>Nos Produits</h2>
+    <div id="produits" class="produit-container"></div>
+    
+    <h2>Votre Panier</h2>
+    <ul id="panier" class="panier-container"></ul>
 
-    <!-- Fichiers JS du MVC -->
-    <script src="js/model.js"></script>
-    <script src="js/view.js"></script>
-    <script src="js/controller.js"></script>
+    <div class="produit">
+      <img src="images/pantalon-gris.jpg" alt="Produit 1">
+      <h3>Pantalon gris</h3>
+      <p>Prix: 19.99€</p>
+      <button class="ajouter-panier">Ajouter au panier</button>
+    </div>
+    
+  </main>
+
+  <footer>
+    <p>© 2025 Vente de Vêtements - Tous droits réservés.</p>
+  </footer>
 </body>
 </html>

@@ -1,0 +1,4 @@
+nom,prix,taille,couleur,lien_image
+Casquette,200,L,Gris,../../frontend/images/Casquette-grise.jpg
+Pantalon,1000,S,Gris,../../frontend/images/pantalon-gris.jpg
+Veste,300,XL,Gris,../../frontend/images/Veste-grise.jpg

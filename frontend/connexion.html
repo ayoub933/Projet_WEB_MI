@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion - Vente de Vêtements</title>
+  <link rel="stylesheet" href="css/connexion.css">
+  <script type="module" src="js/controler.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Connexion</h1>
+    <nav>
+      <a href="accueil.html">Accueil</a>
+    </nav>
+  </header>
+
+  <main>
+    <form action="/connexion" method="post">
+      <div>
+        <label for="username">Nom d'utilisateur :</label>
+        <input type="text" id="username" name="username" required>
+      </div>
+      <div>
+        <label for="password">Mot de passe :</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      <button type="submit">Se connecter</button>
+    </form>
+  </main>
+
+  <footer>
+    <p>© 2025 Vente de Vêtements - Tous droits réservés.</p>
+  </footer>
+</body>
+</html>
