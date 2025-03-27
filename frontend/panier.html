@@ -19,16 +19,22 @@
 
     <main>
         <h2>Articles dans le panier</h2>
-        <div id="contenu-panier" class="panier-container">
-            <!-- Les articles du panier seront affichés ici -->
-        </div>
-
+        <div id="contenu-panier" class="panier-container"></div>
+      
         <div class="total">
-            <p>Total: <span id="total-prix">0</span> €</p>
-            <button id="vider-panier">Vider le panier</button>
-        </div>
-    </main>
+          <p>Total: <span id="total-prix">0</span> €</p>
+          <button id="vider-panier">Vider le panier</button>
+          <button id="valider-panier">Valider le panier</button>
 
+        </div>
+      </main>
+      <script type="module">
+        import { View } from './js/view.js';
+        window.addEventListener('DOMContentLoaded', () => {
+          View.afficherPanier();
+        });
+      </script>
+      
     <footer>
         <p>© 2025 Vente de Vêtements - Tous droits réservés.</p>
     </footer>

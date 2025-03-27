@@ -1,4 +1,3 @@
-// backend/models/articleModel.js
 const db = require('./database');
 
 async function getAllArticles() {
@@ -11,7 +10,6 @@ async function getArticleById(id) {
   return rows[0];
 }
 
-// Exemple d'insertion d'article, si besoin
 async function createArticle({ nom, prix, taille, couleur, lien_image }) {
   const { rows } = await db.query(
     'INSERT INTO articles (nom, prix, taille, couleur, lien_image) VALUES ($1, $2, $3, $4, $5) RETURNING *',
@@ -24,5 +22,4 @@ module.exports = {
   getAllArticles,
   getArticleById,
   createArticle
-  // ... d'autres fonctions si besoin (updateArticle, deleteArticle...)
 };
