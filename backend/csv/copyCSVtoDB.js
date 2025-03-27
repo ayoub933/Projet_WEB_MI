@@ -32,7 +32,7 @@ function importArticles() {
     .on('data', (row) => {
       // Correction de la requête : on a 5 colonnes et 5 valeurs
       const query = 'INSERT INTO Articles (nom, prix, taille, couleur, lien_image) VALUES ($1, $2, $3, $4, $5)';
-      const values = [row.nom, parseInt(row.argent, 10), row.taille, row.couleur, row.lien_image];
+      const values = [row.nom, parseFloat(row.prix, 10), row.taille, row.couleur, row.lien_image];
       db.query(query, values);
     })
     .on('end', () => {

@@ -27,4 +27,63 @@ const loginPost = async (req, res, next) => {
   }
 };
 
-module.exports = { loginGet, loginPost };
+// backend/serverController.js
+const articleModel = require('./articleModel');
+
+// Route pour récupérer tous les articles
+async function getArticles(req, res) {
+  try {
+    const articles = await articleModel.getAllArticles();
+    res.json(articles); // Renvoie la liste au format JSON
+  } catch (err) {
+    console.error('Erreur getArticles:', err);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+}
+
+// Route pour récupérer un article par ID
+async function getArticleById(req, res) {
+  const { id } = req.params;
+  try {
+    const article = await articleModel.getArticleById(id);
+    if (!article) {
+      return res.status(404).json({ error: 'Article non trouvé' });
+    }
+    res.json(article);
+  } catch (err) {
+    console.error('Erreur getArticleById:', err);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+}
+
+// Route pour créer un article (ex: POST /api/articles)
+async function createArticle(req, res) {
+  try {
+    const { nom, prix, taille, couleur, lien_image } = req.body;
+    // Vérifications basiques
+    if (!nom || !prix || !lien_image) {
+      return res.status(400).json({ error: 'Champs obligatoires manquants' });
+    }
+    const newArticle = await articleModel.createArticle({
+      nom,
+      prix,
+      taille,
+      couleur,
+      lien_image
+    });
+    res.json(newArticle);
+  } catch (err) {
+    console.error('Erreur createArticle:', err);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+}
+
+module.exports = {
+  // Auth
+  loginGet,
+  loginPost,
+  // Articles
+  getArticles,
+  getArticleById,
+  createArticle,
+};

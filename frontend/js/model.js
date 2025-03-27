@@ -1,17 +1,10 @@
-// backend/model.js
-const db = require('../../backend/database');
-const bcrypt = require('bcrypt');
+// frontend/js/model.js
 
-const findUserByUsername = async (username) => {
-  const { rows } = await db.query('SELECT * FROM utilisateurs WHERE nom = $1', [username]);
-  return rows[0];
-};
+export let produits = [];  // tableau vide au démarrage
 
-const comparePassword = async (plainPassword, hash) => {
-  return await bcrypt.compare(plainPassword, hash);
-};
-
-module.exports = {
-  findUserByUsername,
-  comparePassword
+export const Panier = {
+  panier: [],
+  getPanier() { return this.panier; },
+  ajouterProduit(produit) { this.panier.push(produit); },
+  supprimerProduit(index) { this.panier.splice(index, 1); }
 };
