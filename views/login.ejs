@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Nike Shop - Connexion</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <form action="/login" method="POST" class="auth-form">
+    <h1 class="title animated">Nike Shop</h1>
+    <h2>Connexion</h2>
+    <input type="email" name="email" placeholder="Email" required />
+    <input type="password" name="password" placeholder="Mot de passe" required />
+    <button type="submit">Se connecter</button>
+    <% if (typeof error !== 'undefined') { %>
+      <p class="error"><%= error %></p>
+    <% } %>
+  </form>
+</body>
+</html>
