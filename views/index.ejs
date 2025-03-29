@@ -15,23 +15,31 @@
     <h1 class="hero-title">Nike Shop</h1>
     <p class="tagline">Boost Your Style. Boost Your Game.</p>
     <div class="header-links">
+      <% if (user) { %>
+        <p>💰 Solde : <%= user.money %> €</p>
+      <% } %>      
       <a href="/cart" class="btn-cart">🛒 Mon Panier</a>
       <a href="/logout" class="btn-logout">Se déconnecter</a>
     </div>
   </header>
-
+  <% if (message) { %>
+    <div class="alert-message">
+      <%= message %>
+    </div>
+  <% } %>
   <section class="products">
     <% products.forEach(p => { %>
       <div class="product-card">
-        <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9" alt="Téléphone" style="width: 250px; border-radius: 20px;" />
+        <img src="<%= p.image %>" alt="<%= p.name %>" style="width: 250px; border-radius: 20px;" />
         <h3><%= p.name %></h3>
-        <form action="/add-to-cart/<%= p.id %>" method="POST">
+        <p><%= p.price %> €</p>
+        <form action="/add-to-cart/<%= p._id %>" method="POST">
           <button class="add-btn">Ajouter au panier</button>
         </form>
       </div>
-    <% }) %>
+    <% }) %>    
   </section>
-
+  
  
 
 </body>

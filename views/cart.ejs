@@ -1,28 +1,91 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <title>Panier</title>
-    <link rel="stylesheet" href="/styles.css">
+  <meta charset="UTF-8">
+  <title>Panier</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .cart-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
 
+    .cart-item button {
+      font-size: 14px;
+      padding: 4px 8px;
+      margin: 0 2px;
+      border: none;
+      background-color: #eee;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .cart-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .cart-actions button {
+      padding: 6px 12px;
+      font-size: 14px;
+    }
+  </style>
 </head>
 <body>
-    <h1>🛒 Mon panier</h1>
+  <h1>🛒 Mon panier</h1>
 
-<% if (cart.length === 0) { %>
+  <% if (cart.length === 0) { %>
     <p>Votre panier est vide.</p>
-<% } else { %>
-    <ul>
-        <% cart.forEach(item => { %>
-            <li>
-                <img src="<%= item.image %>" alt="<%= item.name %>" width="80">
-                <span><%= item.name %></span>
-            </li>
-        <% }) %>
+  <% } else { %>
+    <ul class="cart-list">
+      <% cart.forEach(item => { %>
+        <% if (item.product) { %>
+          <li class="cart-item">
+            <img src="<%= item.product.image %>" alt="<%= item.product.name %>" width="80">
+            <span><strong><%= item.product.name %></strong> - <%= item.product.price %>€</span>
+
+            <div>
+
+                <form action="/cart/increase/<%= item.product._id %>" method="POST" style="display:inline;">
+                    <button type="submit">➕</button>
+                  </form>
+                  <span>Quantité : <%= item.quantity %></span>
+                  <form action="/cart/decrease/<%= item.product._id %>" method="POST" style="display:inline;">
+                    <button type="submit">➖</button>
+                  </form>
+            </div>
+          </li>
+        <% } %>
+      <% }) %>
     </ul>
-<% } %>
 
-<a href="/">⬅ Retour à l’accueil</a>
+    <div class="cart-actions">
+        <% if (cart.length === 0) { %>
+            <p>Votre panier est vide.</p>
+          <% } else { %>
+            💶 Total : <%= total.toFixed(2) %>
+          <% } %>
+          
 
+      
+        <form action="/clear-cart" method="POST">
+          <button class="btn-clear">🧹 Vider le panier</button>
+        </form>
+      
+        <form action="/checkout" method="POST">
+          <button class="btn-checkout">✅ Valider le panier</button>
+        </form>
+      </div>
+      
+  <% } %>
+
+  <% if (message) { %>
+    <p class="cart-message"><%= message %></p>
+  <% } %>
+
+  <a href="/" class="btn-back">⬅ Retour à l’accueil</a>
 </body>
 </html>

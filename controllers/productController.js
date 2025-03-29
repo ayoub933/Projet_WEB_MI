@@ -1,41 +1,37 @@
-const allProducts = [
-    { id: 1, name: "Téléphone", image: "/images/1.jpg" },
-    { id: 2, name: "Casque", image: "/images/1.jpg" },
-    { id: 3, name: "Ordinateur", image: "/images/1.jpg" }
-];
+const Product = require('../models/productModel');
+const User = require('../models/userModel');
 
-exports.showHome = (req, res) => {
-    const message = req.session.message || null;
-    req.session.message = null;
+exports.showHome = async (req, res) => {
+  const products = await Product.find();
+  const message = req.session.message || null;
+  req.session.message = null;
 
-    res.render('index', {
-        products: allProducts,
-        message
-    });
+  res.render('index', {
+    products,
+    message
+  });
 };
-
-const User = require('../models/userModel'); // importe User
 
 exports.addToCart = async (req, res) => {
-    const productId = parseInt(req.params.id);
-    const product = allProducts.find(p => p.id === productId);
-
+    const productId = req.params.id;
+    const product = await Product.findById(productId);
     if (!product) return res.send('Produit introuvable');
-
-    if (!req.session.cart) {
-        req.session.cart = [];
+  
+    const user = await User.findById(req.session.user.id);
+  
+    const existingItem = user.cart.find(item => item.product.toString() === productId);
+  
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      user.cart.push({
+        product: product._id, // ✅ référence
+        quantity: 1
+      });
     }
-
-    req.session.cart.push(product);
+  
+    await user.save();
     req.session.message = `"${product.name}" ajouté au panier ✅`;
-
-    // 🔥 Mise à jour en base
-    if (req.session.user) {
-        await User.findByIdAndUpdate(
-            req.session.user.id,
-            { cart: req.session.cart }
-        );
-    }
-
     res.redirect('/');
-};
+  };
+  

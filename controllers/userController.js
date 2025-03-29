@@ -27,11 +27,14 @@ exports.login = async (req, res) => {
   req.session.user = {
     id: user._id,
     email: user.email,
-    role: user.role
+    role: user.role,
+    money: user.money // ✅ ajoute ceci
   };
+
   req.session.cart = user.cart || [];
   res.redirect('/');
 };
+
 
 exports.logout = async (req, res) => {
   const User = require('../models/userModel');
