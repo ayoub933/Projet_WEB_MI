@@ -1,20 +1,38 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Nike Shop - Connexion</title>
-  <link rel="stylesheet" href="/styles.css">
+    <meta charset="UTF-8">
+    <title>Nike Shop - Connexion</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <form action="/login" method="POST" class="auth-form">
-    <h1 class="title animated">Nike Shop</h1>
-    <h2>Connexion</h2>
-    <input type="email" name="email" placeholder="Email" required />
-    <input type="password" name="password" placeholder="Mot de passe" required />
-    <button type="submit">Se connecter</button>
-    <% if (typeof error !== 'undefined') { %>
-      <p class="error"><%= error %></p>
-    <% } %>
-  </form>
-</body>
+    <main class="main-content-area auth-bg"> <div class="page-content-wrapper auth-page">
+            <form action="/login" method="POST" class="auth-form">
+                <h1 class="form-brand-title">Nike Shop</h1>
+                <h2>Connexion</h2>
+
+                <div class="form-group">
+                    <input id="email" type="email" name="email" placeholder="Email" required />
+                </div>
+                <div class="form-group">
+                    <input id="password" type="password" name="password" placeholder="Mot de passe" required />
+                </div>
+
+                 <button type="submit" class="button-57">
+                    <span class="text">Se connecter</span>
+                    <span class="alternate-text">Go !</span>
+                </button>
+
+                <% if (typeof error !== 'undefined' && error) { %>
+                    <p class="error-message"><%= error %></p>
+                <% } %>
+
+                <p class="auth-switch">Pas de compte ? <a href="/register">Inscrivez-vous</a></p>
+            </form>
+        </div> </main> <footer class="site-footer">
+        <p>&copy; <%= new Date().getFullYear() %> Nike Shop. Tous droits réservés.</p>
+    </footer>
+
+     </body>
 </html>

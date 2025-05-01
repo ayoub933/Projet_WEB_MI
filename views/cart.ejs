@@ -2,27 +2,54 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Panier</title>
-    <link rel="stylesheet" href="/styles.css">
+    <title>Panier - Nike Shop</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles.css"> </head>
+<body class="content-layout">
 
-</head>
-<body>
-    <h1>🛒 Mon panier</h1>
+    <%- include('partials/header') %> <main class="main-content-area">
 
-<% if (cart.length === 0) { %>
-    <p>Votre panier est vide.</p>
-<% } else { %>
-    <ul>
-        <% cart.forEach(item => { %>
-            <li>
-                <img src="<%= item.image %>" alt="<%= item.name %>" width="80">
-                <span><%= item.name %></span>
-            </li>
-        <% }) %>
-    </ul>
-<% } %>
+        <div class="page-content-wrapper"> <h1 class="page-title">🛒 Mon Panier</h1> <% if (typeof message !== 'undefined' && message) { %>
+              <p class="cart-info-message <%= message.includes('Erreur') ? 'error' : 'success' %>"><%= message %></p>
+            <% } %>
 
-<a href="/">⬅ Retour à l’accueil</a>
 
-</body>
+            <% if (!cart || !cart.items || cart.items.length === 0) { %>
+                <div class="cart-empty">
+                    <p>Votre panier est actuellement vide.</p>
+                    <a href="/" class="button-57">Explorer les collections</a> </div>
+            <% } else { %>
+                <div class="cart-items-container">
+                    <% cart.items.forEach(item => { %>
+                        <% if (item && item.productId) { %>
+                            <div class="cart-item">
+                                <div class="cart-item-image">
+                                     <img src="<%= item.image || '/images/placeholder.png' %>" alt="<%= item.name %>"> </div>
+                                <div class="item-details">
+                                    <span class="item-name"><%= item.name %></span>
+                                    <span class="item-price"><%= item.price %> €</span>
+                                </div>
+                                <span class="item-quantity">x <%= item.quantity %></span>
+                                <div class="item-remove">
+                                     <form action="/remove-from-cart/<%= item.productId %>" method="POST" style="display: inline;">
+                                         <button type="submit" class="remove-btn" title="Supprimer">&times;</button> </form>
+                                </div>
+                            </div>
+                        <% } else { %>
+                            <div class="cart-item error">Article invalide.</div>
+                        <% } %>
+                    <% }) %>
+                </div>
+
+                <div class="cart-summary">
+                    <p class="total-price"><span>Total :</span> <%= cart.totalPrice || 0 %> €</p> <form action="/checkout" method="GET"> <button type="submit" class="button-57 checkout-button">
+                            <span class="text">Passer la commande</span>
+                            <span class="alternate-text">Valider !</span>
+                        </button>
+                    </form>
+                </div>
+            <% } %>
+        </div> </main> <%- include('partials/footer') %>
+
+    </body>
 </html>

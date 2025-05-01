@@ -1,0 +1,13 @@
+<header class="site-header">
+    <div class="logo">
+        <h1><a href="/" style="color: inherit; text-decoration: none;">Nike Shop</a></h1>
+    </div>
+    <nav class="header-links">
+        <a href="/cart" class="btn-cart">🛒 Panier</a>
+        <% if (user) { %>
+            <a href="/logout" class="btn-logout">Déconnexion</a>
+        <% } else { %>
+            <a href="/login">Connexion</a>
+        <% } %>
+    </nav>
+</header>

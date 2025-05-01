@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const productController = require('../controllers/productController');
+const { isAuthenticated } = require('../middlewares/auth');
 
-
-router.get('/', productController.showHome);
-router.post('/add-to-cart/:id', productController.addToCart);
-
+router.get('/', isAuthenticated, productController.showHome);
+router.post('/add-to-cart/:id', isAuthenticated, productController.addToCart);
 
 module.exports = router;

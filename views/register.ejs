@@ -1,20 +1,39 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Nike Shop - Inscription</title>
-  <link rel="stylesheet" href="/styles.css">
-</head>
+    <meta charset="UTF-8">
+    <title>Nike Shop - Inscription</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles.css"> </head>
 <body>
-  <form action="/register" method="POST" class="auth-form">
-    <h1 class="title animated">Nike Shop</h1>
-    <h2>Créer un compte</h2>
-    <input type="email" name="email" placeholder="Email" required />
-    <input type="password" name="password" placeholder="Mot de passe" required />
-    <button type="submit">S'inscrire</button>
-    <% if (typeof error !== 'undefined') { %>
-      <p class="error"><%= error %></p>
-    <% } %>
-  </form>
-</body>
+    <main class="main-content-area auth-bg">
+
+        <div class="page-content-wrapper auth-page">
+            <form action="/register" method="POST" class="auth-form">
+                <h1 class="form-brand-title">Nike Shop</h1>
+                <h2>Créer un compte</h2>
+
+                <div class="form-group">
+                     <input id="email" type="email" name="email" placeholder="Email" required />
+                </div>
+
+                <div class="form-group">
+                     <input id="password" type="password" name="password" placeholder="Mot de passe" required />
+                </div>
+
+                <button type="submit" class="button-57">
+                    <span class="text">S'inscrire</span>
+                    <span class="alternate-text">Let's Go!</span> </button>
+
+                <% if (typeof error !== 'undefined' && error) { %>
+                    <p class="error-message"><%= error %></p>
+                <% } %>
+
+                <p class="auth-switch">Déjà un compte ? <a href="/login">Connectez-vous</a></p>
+            </form>
+        </div> </main> <footer class="site-footer">
+        <p>&copy; <%= new Date().getFullYear() %> Nike Shop. Tous droits réservés.</p>
+    </footer>
+
+     </body>
 </html>
