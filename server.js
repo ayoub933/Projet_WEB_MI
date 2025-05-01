@@ -15,12 +15,30 @@ app.use(session({
 }));
 
 // ✅ Middleware global : injecte dans toutes les vues
-app.use((req, res, next) => {
-    res.locals.user = req.session.user || null;
+const User = require('./models/userModel'); // ⬅️ n'oublie d'importer
+
+app.use(async (req, res, next) => {
+    if (req.session.user) {
+        const user = await User.findById(req.session.user.id);
+        if (user) {
+            res.locals.user = {
+                id: user._id,
+                email: user.email,
+                role: user.role,
+                money: user.money // ✅ injecte le solde ici
+            };
+        } else {
+            res.locals.user = null;
+        }
+    } else {
+        res.locals.user = null;
+    }
+
     res.locals.message = req.session.message || null;
     res.locals.connectedCount = connectedUsers.size || 0;
     next();
 });
+
 
 // ✅ Suivi des utilisateurs connectés
 app.use((req, res, next) => {
@@ -44,6 +62,7 @@ const cartRoutes = require('./routes/cartRoutes');
 app.use('/', userRoutes);
 app.use('/', productRoutes);
 app.use('/', cartRoutes);
+
 
 // Lancement
 const PORT = 3000;

@@ -1,0 +1,60 @@
+[{
+  "_id": {
+    "$oid": "67e77834f538342e27a16eee"
+  },
+  "id": 1,
+  "name": "Téléphone",
+  "description": "Smartphone dernière génération avec écran AMOLED.",
+  "price": 799.99,
+  "image": "/images/telephone.png"
+},
+{
+  "_id": {
+    "$oid": "67e77834f538342e27a16eef"
+  },
+  "id": 2,
+  "name": "Casque",
+  "description": "Casque Bluetooth avec réduction de bruit active.",
+  "price": 199.99,
+  "image": "/images/casque.png"
+},
+{
+  "_id": {
+    "$oid": "67e77834f538342e27a16ef0"
+  },
+  "id": 3,
+  "name": "Ordinateur",
+  "description": "PC portable i7, 16Go RAM, SSD 512Go.",
+  "price": 1299.99,
+  "image": "images/ordinateur.png"
+},
+{
+  "_id": {
+    "$oid": "67e77834f538342e27a16ef1"
+  },
+  "id": 4,
+  "name": "Montre connectée",
+  "description": "Montre avec capteur cardiaque, GPS et écran tactile.",
+  "price": 249.99,
+  "image": "/images/montre.png"
+},
+{
+  "_id": {
+    "$oid": "67e77834f538342e27a16ef2"
+  },
+  "id": 5,
+  "name": "Souris gamer",
+  "description": "Souris RGB avec 6 boutons programmables.",
+  "price": 59.99,
+  "image": "/images/souris.png"
+},
+{
+  "_id": {
+    "$oid": "67e77834f538342e27a16ef3"
+  },
+  "id": 6,
+  "name": "Clavier mécanique",
+  "description": "Clavier mécanique avec rétroéclairage personnalisable.",
+  "price": 119.99,
+  "image": "/images/clavier.png"
+}]

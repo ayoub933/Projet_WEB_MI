@@ -1,0 +1,45 @@
+[
+    {
+      "id": 1,
+      "name": "Téléphone",
+      "description": "Smartphone dernière génération avec écran AMOLED.",
+      "price": 799.99,
+      "image": "/images/1.jpg"
+    },
+    {
+      "id": 2,
+      "name": "Casque",
+      "description": "Casque Bluetooth avec réduction de bruit active.",
+      "price": 199.99,
+      "image": "/images/2.jpg"
+    },
+    {
+      "id": 3,
+      "name": "Ordinateur",
+      "description": "PC portable i7, 16Go RAM, SSD 512Go.",
+      "price": 1299.99,
+      "image": "/images/3.jpg"
+    },
+    {
+      "id": 4,
+      "name": "Montre connectée",
+      "description": "Montre avec capteur cardiaque, GPS et écran tactile.",
+      "price": 249.99,
+      "image": "/images/4.jpg"
+    },
+    {
+      "id": 5,
+      "name": "Souris gamer",
+      "description": "Souris RGB avec 6 boutons programmables.",
+      "price": 59.99,
+      "image": "/images/5.jpg"
+    },
+    {
+      "id": 6,
+      "name": "Clavier mécanique",
+      "description": "Clavier mécanique avec rétroéclairage personnalisable.",
+      "price": 119.99,
+      "image": "/images/6.jpg"
+    }
+  ]
+  
