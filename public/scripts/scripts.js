@@ -6,105 +6,98 @@ gsap.registerPlugin(ScrollTrigger);
 
 // === Utilise 'load' pour éviter le "TP" (saut) au chargement ===
 window.addEventListener('load', () => {
-    console.log("Window loaded, starting scripts (V6 + EJS/CSS Fix Final)...");
+    console.log("Window loaded, scripts starting...");
 
-    // --- Code AJAX (inchangé) ---
-    const addToCartForms = document.querySelectorAll('.add-to-cart-form');
-    const toastNotification = document.getElementById('toast-notification');
-    if (addToCartForms.length > 0 && toastNotification) {
-      addToCartForms.forEach(form => {
-        form.addEventListener('submit', async (event) => {
-           event.preventDefault();
-           const actionUrl = form.action;
-           try {
-               const response = await fetch(actionUrl, { method: 'POST', headers: { 'Accept': 'application/json' } });
-               if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);
-               const result = await response.json();
-               if (result.success) {
-                   toastNotification.textContent = result.message || 'Article ajouté !';
-                   toastNotification.style.backgroundColor = '';
-                   toastNotification.classList.add('show');
-                   setTimeout(() => { toastNotification.classList.remove('show'); }, 3000);
-               } else { throw new Error(result.message || 'Erreur inconnue'); }
-           } catch (error) {
-               console.error('Erreur lors de l\'ajout au panier:', error);
-               toastNotification.textContent = error.message || 'Erreur ajout panier';
-               toastNotification.style.backgroundColor = 'var(--color-error)';
-               toastNotification.classList.add('show');
-               setTimeout(() => {
-                   toastNotification.classList.remove('show');
-                   toastNotification.style.backgroundColor = '';
-                }, 3500);
-           }
-        });
-      });
-      console.log("AJAX Add-to-Cart listeners added.");
-    } else { /* ... logs si éléments manquants ... */ }
-    // --- Fin Code AJAX ---
-
-
-    // --- Animation Scroll ---
-    console.log("Setting up GSAP Scroll...");
-
+    // --- Code Animation GSAP (S'assurer qu'il est correct) ---
     const heroSection = document.querySelector('.hero-scroll-section');
     const heroContent = document.querySelector('.hero-content');
-    // Ciblage de la section produits UNIQUE et CORRECTE (après fix EJS)
     const productsSection = document.querySelector('#products.products-section');
+    const productsTitle = productsSection ? productsSection.querySelector('.products-title') : null;
+    const productsGrid = productsSection ? productsSection.querySelector('.products-grid') : null; // Cible la grille
 
-    // Vérification finale des éléments après corrections HTML/CSS
-    if (!heroSection) console.error("GSAP ERREUR: '.hero-scroll-section' non trouvé!");
-    if (!heroContent) console.error("GSAP ERREUR: '.hero-content' non trouvé!");
-    if (!productsSection) {
-        console.error("GSAP ERREUR: '#products.products-section' non trouvé! Vérifie que tu as bien corrigé index.ejs.");
-    }
+    if (heroSection && heroContent && productsSection && productsTitle && productsGrid) {
+        gsap.set(heroContent, { autoAlpha: 1, yPercent: 0 });
+        gsap.set(productsSection, { autoAlpha: 1 });
+        gsap.set(productsTitle, { autoAlpha: 0, y: -50 }); // Caché en haut
+        gsap.set(productsGrid, { autoAlpha: 0, y: -50 });  // Caché en haut
 
-    // On continue seulement si les 3 éléments sont trouvés
-    if (heroSection && heroContent && productsSection) {
-        console.log("Elements found. Setting initial states with autoAlpha...");
-
-        // États Initiaux gérés PROPREMENT par GSAP
-        gsap.set(heroContent, { autoAlpha: 1, yPercent: 0 }); // Hero visible
-        gsap.set(productsSection, { autoAlpha: 0 }); // Produits cachés
-
-        // Timeline principale
         const heroTl = gsap.timeline({
-            scrollTrigger: {
-                trigger: heroSection,
-                start: "top top",
-                end: "+=100%",       // Fin stable
-                scrub: 1.5,          // Garde le scrub du V6
-                pin: true,
-                pinSpacing: true,
-                // markers: true,    // Décommente pour voir la zone de scroll
-                invalidateOnRefresh: true,
-                // anticipatePin: 1 // Optionnel si 'load' ne suffit pas pour le TP
-            }
+            scrollTrigger: { trigger: heroSection, start: "top top", end: "+=100%", scrub: 1.5, pin: true, pinSpacing: true, invalidateOnRefresh: true }
         });
+        heroTl.to(heroContent, { autoAlpha: 0, yPercent: -50, ease: "power1.inOut" }, 0)
+              .to(productsTitle, { autoAlpha: 1, y: 0, ease: "power1.in" }, 0.15) // Haut -> Bas EaseIn
+              .to(productsGrid, { autoAlpha: 1, y: 0, ease: "power1.in" }, "<+=0.15"); // Haut -> Bas EaseIn
+        console.log("GSAP animations setup.");
+    } else { console.warn("GSAP: Elements manquants pour anim scroll."); }
+    // --- Fin Code Animation GSAP ---
 
-        console.log("Timeline created. Adding animations...");
 
-        // 1. Animation Hero (Disparaît)
-        heroTl.to(heroContent, {
-            autoAlpha: 0,        // Utilise autoAlpha (plus fiable)
-            yPercent: -50,
-            ease: "power1.inOut" // Garde l'ease du V6
-        }, 0); // Commence au début
+    // --- Code AJAX pour ajout panier (VÉRIFIE ATTENTIVEMENT) ---
+    const addToCartForms = document.querySelectorAll('.add-to-cart-form');
+    const toastNotification = document.getElementById('toast-notification');
 
-        // 2. Animation Produits (Apparaît)
-        heroTl.to(productsSection, {
-            autoAlpha: 1,        // Utilise autoAlpha
-            ease: "power1.inOut" // Même ease
-        // Ajuste le timing ici pour la synchro parfaite :
-        // }, 0); // Commence pile en même temps que le texte disparaît
-        // }, 0.1); // Commence 0.1s après
-         }, 0.2); // Commence 0.2s après (valeur de départ raisonnable)
-        // }, ">-0.5"); // Commence 0.5s avant la fin de l'anim du texte (chevauchement)
+    if (addToCartForms.length > 0 && toastNotification) {
+        addToCartForms.forEach(form => {
+            form.addEventListener('submit', async (event) => {
+                // >>>>> 1. CETTE LIGNE EST CRUCIALE !!! <<<<<
+                event.preventDefault();
+                // >>>>> FIN (1) <<<<<
 
-        console.log("GSAP setup complete.");
+                const actionUrl = form.action; // Récupère l'URL du formulaire (ex: /add-to-cart/ID)
+                console.log(`AJAX: Interception soumission vers ${actionUrl}`);
 
+                try {
+                    // >>>>> 2. CETTE PARTIE headers EST CRUCIALE !!! <<<<<
+                    const response = await fetch(actionUrl, {
+                        method: 'POST', // Méthode POST du formulaire
+                        headers: {
+                            // Dit au serveur qu'on attend du JSON en retour
+                            'Accept': 'application/json'
+                        }
+                        // Pas de 'body' ici car les données sont dans l'URL (l'ID)
+                    });
+                    // >>>>> FIN (2) <<<<<
+
+                    // Gère la réponse serveur
+                    if (!response.ok) { // Si le statut n'est pas 2xx (ex: 404, 500)
+                        let errorMsg = `Erreur serveur: ${response.status}`;
+                        try { // Essaye de lire un message d'erreur JSON si le serveur en envoie un
+                             const errorResult = await response.json();
+                             errorMsg = errorResult.message || errorMsg;
+                        } catch (e) { console.log("Réponse d'erreur serveur non JSON."); }
+                        throw new Error(errorMsg); // Lance l'erreur pour aller au bloc catch
+                    }
+
+                    // Si la réponse est OK (2xx), on s'attend à du JSON
+                    const result = await response.json(); // Tente de parser la réponse JSON
+                    console.log("AJAX: Réponse JSON reçue:", result);
+
+                    if (result.success) { // Si le JSON contient success: true
+                        toastNotification.textContent = result.message || 'Ajouté !';
+                        toastNotification.className = 'toast show success'; // Style succès
+                         setTimeout(() => { toastNotification.classList.remove('show'); }, 3000);
+                        console.log("AJAX: Succès:", result.message);
+                         // Ici tu pourrais ajouter du code pour mettre à jour un compteur panier dans le header, etc.
+                    } else { // Si le JSON contient success: false
+                        throw new Error(result.message || 'Le serveur signale une erreur');
+                    }
+
+                } catch (error) { // Gère les erreurs (réseau, parse JSON, ou throw new Error)
+                    console.error('AJAX Erreur ajout panier:', error);
+                    toastNotification.textContent = error.message || 'Erreur ajout';
+                    toastNotification.className = 'toast show error'; // Style erreur
+                     setTimeout(() => {
+                         toastNotification.classList.remove('show');
+                         toastNotification.className = 'toast'; // Nettoie
+                     }, 3500);
+                }
+            });
+        });
+        console.log("AJAX: Listeners ajout panier prêts.");
     } else {
-        console.error("Setup GSAP annulé: éléments manquants. VÉRIFIE TON FICHIER EJS et les sélecteurs JS !");
+        if (addToCartForms.length === 0) console.warn("AJAX Warning: Aucun formulaire '.add-to-cart-form' trouvé.");
+        if (!toastNotification) console.warn("AJAX Warning: Aucun élément '#toast-notification' trouvé.");
     }
-    // --- Fin Animation Scroll ---
+    // --- Fin Code AJAX ---
 
-}); // Fin du window.onload
+});

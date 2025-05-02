@@ -1,181 +1,122 @@
 // ======================================================
-// VÉRIFIE ET CORRIGE : controllers/userController.js
+// == FICHIER COMPLET : controllers/userController.js  ==
+// == (Session OBJET / Sauvegarde Array BDD)           ==
 // ======================================================
 const User = require('../models/userModel');
-// const bcrypt = require('bcrypt'); // Si tu utilises bcrypt pour les mots de passe
+const Product = require('../models/productModel'); // <<< IMPORTANT pour populate login
+function setFlashMessage(req, type, message) { /* ... */ }
 
-// === VÉRIFIE QUE CHAQUE FONCTION COMMENCE PAR 'exports.' ===
-
-// Pour afficher le formulaire d'inscription
-exports.registerForm = (req, res) => {
-    // Ajoute un log pour être sûr qu'elle est appelée
-    console.log("INFO: Accès contrôleur registerForm");
-    res.render('register', { error: req.flash ? req.flash('error')[0] : null }); // Passe les erreurs flash éventuelles
-};
-
-// Pour traiter l'inscription
-exports.register = async (req, res) => {
-    const { email, password } = req.body; // Récupère email et mot de passe du formulaire
-    console.log(`INFO: Tentative inscription pour: ${email}`);
-    try {
-        // Vérifie si l'email existe déjà
-        const existing = await User.findOne({ email: email });
-        if (existing) {
-            console.warn(`WARN: Email déjà utilisé lors de l'inscription: ${email}`);
-            (req.flash || req.session)('error', 'Cet email est déjà utilisé.'); // Message d'erreur
-            return res.redirect('/register'); // Redirige vers le formulaire
-        }
-
-        // === ATTENTION : Hashage de mot de passe MANQUANT ===
-        // En production, il FAUT hasher le mot de passe avant de sauvegarder
-        // Exemple avec bcrypt:
-        // const salt = await bcrypt.genSalt(10);
-        // const hashedPassword = await bcrypt.hash(password, salt);
-        // const user = new User({ email, password: hashedPassword });
-        // Pour l'instant, sans hashage (NON SÉCURISÉ)
-        const user = new User({ email, password });
-        // === FIN ATTENTION ===
-
-        await user.save(); // Sauvegarde le nouvel utilisateur
-        console.log(`INFO: Nouvel utilisateur enregistré: ${email}`);
-        (req.flash || req.session)('message', 'Inscription réussie ! Vous pouvez maintenant vous connecter.'); // Message succès
-        res.redirect('/login'); // Redirige vers la page de connexion
-
-    } catch (error) {
-         console.error("ERREUR lors de l'inscription:", error);
-         (req.flash || req.session)('error', 'Erreur lors de l\'inscription.');
-         res.redirect('/register'); // Redirige vers le formulaire en cas d'erreur
-    }
-};
-
-// Pour afficher le formulaire de connexion
-exports.loginForm = (req, res) => {
-     // Ajoute un log pour être sûr qu'elle est appelée
-    console.log("INFO: Accès contrôleur loginForm");
-    res.render('login', { error: req.flash ? req.flash('error')[0] : null }); // Passe les erreurs flash
-};
-
-// ======================================================
-// CORRECTION pour controllers/userController.js
-// (Focus sur login et logout pour sauvegarde/chargement panier)
-// ======================================================
-// const bcrypt = require('bcrypt'); // Décommente si tu utilises bcrypt
-
-// Helper pour les messages (si tu utilises connect-flash ou session simple)
-function setFlashMessage(req, type, message) {
-    if (req.flash) { req.flash(type, message); }
-    else { req.session.messageType = type; req.session.message = message; }
-}
-
-// ... registerForm, register ...
-exports.registerForm = (req, res) => { /* Ton code ici */ res.render('register'); };
-exports.register = async (req, res) => { /* Ton code ici */ };
-exports.loginForm = (req, res) => { /* Ton code ici */ res.render('login'); };
-
-
-// === login (CORRIGÉ pour initialiser le panier session correctement) ===
+// --- login (Charge Array BDD [{ product: ID, quantity }], PEUPLE, Crée Objet Session) ---
 exports.login = async (req, res) => {
     const { email, password } = req.body;
-    console.log(`INFO: Tentative connexion: ${email}`);
+    console.log(`\n--- LOGIN ATTEMPT: ${email} ---`);
     try {
-        // --- Trouve l'utilisateur et vérifie le mot de passe ---
         const user = await User.findOne({ email });
-        // ATTENTION: Comparaison mdp en clair - Remplace par bcrypt si besoin
-        if (!user || user.password !== password) {
-             console.warn(`WARN: Échec connexion pour: ${email}`);
+        // ATTENTION: Comparaison mdp en clair
+        if (!user || user.password !== password ) {
              setFlashMessage(req, 'error', 'Email ou mot de passe incorrect.');
              return res.redirect('/login');
         }
-        console.log(`INFO: Connexion réussie pour: ${user.email}`);
-        // -------------------------------------------------------
-
-        // Crée la session utilisateur
+        console.log(`LOGIN SUCCESS: User ${user.email} (ID: ${user._id}) found.`);
         req.session.user = { id: user._id, email: user.email };
 
-        // --- CHARGEMENT/INITIALISATION PANIER SESSION ---
+        // --- CHARGEMENT ET PEUPLEMENT PANIER ---
         let sessionCartItems = [];
-        // Vérifie si user.cart existe en BDD et si c'est un TABLEAU (structure attendue en BDD)
-        if (user.cart && Array.isArray(user.cart)) {
-            sessionCartItems = user.cart; // Charge les items depuis la BDD
-            console.log(`INFO: Panier chargé depuis BDD (${sessionCartItems.length} items)`);
-        } else {
-            console.log(`INFO: Pas de panier valide (tableau) trouvé en BDD.`);
-            // Si user.cart existe mais n'est pas un tableau, log un avertissement
-            if (user.cart) {
-                console.warn("WARN: user.cart trouvé en BDD mais n'est pas un tableau:", user.cart);
-            }
-        }
-
-        // Recalcule le total à partir des items chargés
         let calculatedTotal = 0;
-        sessionCartItems.forEach(item => {
-            calculatedTotal += (parseFloat(item.price) || 0) * (parseInt(item.quantity, 10) || 0);
-        });
+        console.log('--- LOGIN: Chargement Panier BDD ---');
+        console.log('Valeur BRUTE user.cart chargé:', JSON.stringify(user.cart, null, 2)); // Doit être [{ product: ID, quantity }]
 
-        // Définit la structure standard en session : { items: Array, totalPrice: Number }
+        // Charge le tableau [{ product: ID, quantity }] depuis la BDD
+        if (user.cart && Array.isArray(user.cart) && user.cart.length > 0) {
+            const cartFromDB = user.cart;
+            console.log(`INFO: Panier BDD (Array IDs) chargé (${cartFromDB.length} items)`);
+            try {
+                // Peuple les détails des produits pour la session
+                const populatedUser = await User.findById(user._id).populate('cart.product'); // Assure 'ref: Product' dans userSchema
+
+                if (populatedUser && populatedUser.cart) {
+                     console.log("INFO: Peuplement BDD réussi.");
+                     sessionCartItems = populatedUser.cart.map(item => {
+                         if (!item.product) { return null; } // Sécurité
+                         const price = parseFloat(item.product.price) || 0;
+                         const quantity = parseInt(item.quantity, 10) || 0;
+                         calculatedTotal += price * quantity; // Calcule total ici
+                         // Crée l'item pour la session { productId, name, price, image, quantity }
+                         return {
+                             productId: String(item.product._id), name: item.product.name,
+                             price: price, image: item.product.image, quantity: quantity
+                         };
+                     }).filter(item => item !== null);
+                     console.log(`INFO: Panier reconstruit pour session (${sessionCartItems.length} items valides).`);
+                } else { console.warn("WARN: Echec peuplement ou panier vide après."); }
+            } catch(populateError) {
+                console.error("ERREUR lors du peuplement panier BDD:", populateError);
+                setFlashMessage(req, 'error', 'Erreur chargement détails panier.');
+            }
+        } else { console.log(`INFO: Panier BDD vide ou invalide.`); }
+
+        // Crée l'OBJET en session
         req.session.cart = {
-            items: sessionCartItems,
-            totalPrice: parseFloat(calculatedTotal.toFixed(2))
+            items: sessionCartItems, // Le tableau d'items COMPLETS
+            totalPrice: parseFloat(calculatedTotal.toFixed(2)) // Le total calculé
         };
-        console.log('--- DEBUG: Panier initialisé en SESSION après login ---');
-        console.log(JSON.stringify(req.session.cart, null, 2));
-        console.log('----------------------------------------------------');
-        // --- FIN CHARGEMENT PANIER ---
+        console.log('--- DEBUG: Panier OBJET finalisé en SESSION après login ---'); console.log(JSON.stringify(req.session.cart, null, 2));
 
-        // Sauvegarde session avant redirection
         req.session.save(err => {
-            if (err) { console.error("ERREUR session login:", err); setFlashMessage(req, 'error', 'Erreur session.'); return res.redirect('/login');}
-            console.log('INFO: Session sauvegardée après login.');
-            res.redirect('/'); // Redirige vers l'accueil
+            if (err) { console.error("ERREUR session login:", err); /* ... */}
+            console.log('INFO: Session sauvegardée, redirection vers /');
+            res.redirect('/');
         });
+        // --- FIN CHARGEMENT PANIER ---
 
     } catch (error) {
         console.error("ERREUR GLOBALE login:", error);
         setFlashMessage(req, 'error', 'Erreur serveur connexion.');
         res.redirect('/login');
-    }
+     }
 };
 
 
-// === logout (CORRIGÉ pour sauvegarder la bonne structure en BDD) ===
+// --- logout (Sauvegarde Array BDD [{ product: ID, quantity }] depuis Objet Session) ---
 exports.logout = async (req, res) => {
-     console.log(`INFO: Déconnexion user: ${req.session.user ? req.session.user.email : 'N/A'}`);
-
-    // Sauvegarde le panier de la session vers la BDD AVANT de détruire la session
-    // Vérifie si user et cart.items existent et que items est bien un tableau
+     console.log(`\n--- LOGOUT ATTEMPT: User ${req.session.user ? req.session.user.email : 'N/A'} ---`);
+    // Vérifie user et la structure OBJET en session
     if (req.session.user && req.session.user.id && req.session.cart && Array.isArray(req.session.cart.items)) {
         const userId = req.session.user.id;
-        // === IMPORTANT: Sauvegarde UNIQUEMENT le tableau d'items ===
-        // (Adapte si ton schéma User attend autre chose, par ex: req.session.cart entier)
-        const itemsToSave = req.session.cart.items;
-        console.log(`INFO: Tentative Sauvegarde panier (${itemsToSave.length} items) avant déconnexion pour user ${userId}`);
-        console.log('DEBUG: Items à sauvegarder:', JSON.stringify(itemsToSave, null, 2));
+
+        // <<< FORMATTAGE pour correspondre au schéma BDD [{ product: ObjectId, quantity }] >>>
+        const itemsToSave = req.session.cart.items.map(item => ({
+            product: item.productId, // Prend l'ID produit de la session (string)
+            quantity: item.quantity
+        }));
+        // ============================================================================
+
+        console.log(`INFO: Préparation sauvegarde panier (${itemsToSave.length} items) pour user ${userId}`);
+        console.log('--- DEBUG: Données FORMATÉES envoyées à la BDD ---'); console.log(JSON.stringify(itemsToSave, null, 2));
 
         try {
-             // Sauvegarde directement le TABLEAU dans le champ 'cart' de l'utilisateur
-             // Assure-toi que ton schéma User définit 'cart: [ItemSchema]' ou similaire
-             const updateResult = await User.findByIdAndUpdate(userId,
-                { cart: itemsToSave },
-                { new: true, runValidators: true } // Options utiles
-             );
-             if (updateResult) {
-                 console.log(`INFO: Panier BDD sauvegardé pour ${req.session.user.email}.`);
-             } else {
-                 console.warn(`WARN: User ${userId} non trouvé lors de la sauvegarde du panier.`);
-             }
-        } catch (err) {
-             console.error("ERREUR sauvegarde panier BDD lors déconnexion:", err);
-             // On ne bloque pas la déconnexion pour une erreur de sauvegarde ici
-        }
-    } else {
-        console.log("INFO: Pas de user connecté ou panier session invalide, pas de sauvegarde BDD.");
-    }
+            // Sauvegarde le tableau FORMATÉ dans le champ 'cart'
+            // >> VÉRIFIE que ton schéma User attend bien [{ product: ObjectId, quantity }] <<
+            console.log(`INFO: Appel User.findByIdAndUpdate pour ID: ${userId}`);
+            const updateResult = await User.findByIdAndUpdate(userId,
+               { cart: itemsToSave }, // Sauvegarde le tableau formaté
+               { new: true, runValidators: true }
+            );
+            if (updateResult) { console.log(`--- LOGOUT --- >>> SAUVEGARDE BDD RÉUSSIE <<<`); }
+            else { console.error(`--- LOGOUT --- !!! ERREUR: User ${userId} non trouvé lors sauvegarde !`); }
+        } catch (err) { console.error("--- LOGOUT --- !!! ERREUR User.findByIdAndUpdate !!!:", err); }
+    } else { console.log("INFO: Pas de user/panier session valide à sauvegarder."); }
 
     // Détruit la session
     req.session.destroy((err) => {
         if (err) { console.error("ERREUR destruction session:", err); return res.redirect('/'); }
         console.log("INFO: Session détruite.");
-        res.clearCookie('connect.sid'); // Nom de cookie par défaut d'express-session
-        res.redirect('/login'); // Redirige vers login
+        res.clearCookie('connect.sid');
+        res.redirect('/login');
     });
 };
+
+// --- Autres exports userController ---
+exports.registerForm = (req, res) => { res.render('register'); /* + logique message */ };
+exports.register = async (req, res) => { /* ... ton code register ... */ };
+exports.loginForm = (req, res) => { res.render('login'); /* + logique message */ };

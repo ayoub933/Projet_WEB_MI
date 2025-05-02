@@ -4,26 +4,15 @@
     <meta charset="UTF-8">
     <title>Nike Shop - Accueil</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/styles.css">
-</head>
+    <link rel="stylesheet" href="/styles.css"> </head>
 <body>
 
-    <header class="site-header">
-        <div class="logo">
-            <h1><a href="/" style="color: inherit; text-decoration: none;">Nike Shop</a></h1>
-        </div>
-        <nav class="header-links">
-            <a href="/cart" class="btn-cart">🛒 Panier</a>
-            <% if (user) { %>
-                <a href="/logout" class="btn-logout">Déconnexion</a>
-            <% } else { %>
-                <a href="/login">Connexion</a>
-            <% } %>
-        </nav>
-    </header>
+    <%- include('partials/header') %>
 
     <% if (typeof message !== 'undefined' && message) { %>
-        <div class="message-container"> <p class="cart-message"><%= message %></p></div>
+        <div class="message-container">
+             <p class="cart-message"><%= message %></p>
+        </div>
     <% } %>
 
     <section class="hero-scroll-section">
@@ -32,34 +21,39 @@
             <p class="hero-subtitle-large">Découvrez les dernières nouveautés et les incontournables de Nike.</p>
             <a href="#products" class="cta-button hero-cta-large">Voir les produits</a>
         </div>
-        </section>
+    </section>
 
     <main class="main-container">
         <section id="products" class="products-section">
             <h2 class="products-title">Nos Collections</h2>
             <div class="products-grid">
-              <% products.forEach(p => { %>
-                <div class="product-item">
-                    <a href="#" class="product-image-link" title="Voir <%= p.name %>">
-                        <img src="<%= p.image %>" alt="<%= p.name %>" class="product-image">
-                    </a>
-                    <div class="product-details">
-                        <p class="product-price"><%= p.price %> €</p>
-                        <form action="/add-to-cart/<%= p.id %>" method="POST" class="add-to-cart-form">
-                             <button class="button-57 add-btn" role="button">
-                                <span class="text">Ajouter</span>
-                                <span class="alternate-text">Au Panier!</span> </button>
-                        </form>
-                    </div>
-                </div>
-            <% }) %>
-            </div>
-        </section>
-        </main> <div id="toast-notification" class="toast" role="alert" aria-live="assertive"></div>
 
-    <footer class="site-footer">
-        <p>&copy; <%= new Date().getFullYear() %> Nike Shop. Tous droits réservés.</p>
-    </footer>
+                <% if (typeof products !== 'undefined' && products.length > 0) { %>
+                    <% products.forEach(product => { %>
+                        <div class="product-item">
+                            <a href="/product/<%= product._id %>" class="product-image-link" title="Voir <%= product.name %>">
+                                <img src="<%= product.image %>" alt="<%= product.name %>" class="product-image" onerror="this.onerror=null; this.src='/images/placeholder-nike.png';">
+                            </a>
+                            <div class="product-details">
+                                <p class="product-price"><%= product.price %> €</p>
+                                <form action="/add-to-cart/<%= product._id %>" method="POST" class="add-to-cart-form">
+                                    <button class="button-57 add-btn" role="button">
+                                        <span class="text">Ajouter</span>
+                                        <span class="alternate-text">Au Panier!</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <p style="color: white; text-align: center; grid-column: 1 / -1; padding: 2rem;">
+                        Aucun produit disponible pour le moment.
+                    </p>
+                <% } %>
+
+            </div> </section> </main> <div id="toast-notification" class="toast" role="alert" aria-live="assertive"></div>
+
+    <%- include('partials/footer') %>
 
     <script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
     <script src="https://unpkg.com/gsap@3/dist/ScrollTrigger.min.js"></script>

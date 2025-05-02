@@ -1,45 +1,62 @@
 [
-    {
-      "id": 1,
-      "name": "Téléphone",
-      "description": "Smartphone dernière génération avec écran AMOLED.",
-      "price": 799.99,
-      "image": "/images/1.jpg"
-    },
-    {
-      "id": 2,
-      "name": "Casque",
-      "description": "Casque Bluetooth avec réduction de bruit active.",
-      "price": 199.99,
-      "image": "/images/2.jpg"
-    },
-    {
-      "id": 3,
-      "name": "Ordinateur",
-      "description": "PC portable i7, 16Go RAM, SSD 512Go.",
-      "price": 1299.99,
-      "image": "/images/3.jpg"
-    },
-    {
-      "id": 4,
-      "name": "Montre connectée",
-      "description": "Montre avec capteur cardiaque, GPS et écran tactile.",
-      "price": 249.99,
-      "image": "/images/4.jpg"
-    },
-    {
-      "id": 5,
-      "name": "Souris gamer",
-      "description": "Souris RGB avec 6 boutons programmables.",
-      "price": 59.99,
-      "image": "/images/5.jpg"
-    },
-    {
-      "id": 6,
-      "name": "Clavier mécanique",
-      "description": "Clavier mécanique avec rétroéclairage personnalisable.",
-      "price": 119.99,
-      "image": "/images/6.jpg"
-    }
-  ]
-  
+  {
+    "name": "Nike Air Zoom TR 1",
+    "image": "/images/1.jpg",
+    "price": 130
+  },
+  {
+    "name": "Nike Air Max Pulse",
+    "image": "/images/2.jpg",
+    "price": 160
+  },
+  {
+    "name": "Nike Air Force 1 '07",
+    "image": "/images/3.jpg",
+    "price": 120
+  },
+  {
+    "name": "Nike Pegasus 41",
+    "image": "/images/4.jpg",
+    "price": 140
+  },
+  {
+    "name": "Nike Blazer Mid '77 Vintage",
+    "image": "/images/5.jpg",
+    "price": 110
+  },
+  {
+    "name": "Nike Dunk Low Retro",
+    "image": "/images/6.jpg",
+    "price": 115
+  },
+  {
+    "name": "Jordan Max Aura 5",
+    "image": "/images/7.jpg",
+    "price": 135
+  },
+  {
+    "name": "Nike Air Max Plus III",
+    "image": "/images/8.jpg",
+    "price": 180
+  },
+  {
+    "name": "NikeCourt Zoom Lite 3",
+    "image": "/images/9.jpg",
+    "price": 85
+  },
+  {
+    "name": "Nike Metcon 9",
+    "image": "/images/10.jpg",
+    "price": 150
+  },
+  {
+    "name": "Nike Go FlyEase",
+    "image": "/images/11.jpg",
+    "price": 125
+  },
+  {
+    "name": "Nike Revolution 6 NN",
+    "image": "/images/12.jpg",
+    "price": 70
+  }
+]
