@@ -1,20 +1,16 @@
-// ======================================================
-// == FICHIER COMPLET : controllers/cartController.js  ==
-// == (Utilise Session OBJET, Popule si besoin pour vue) ==
-// ======================================================
 const User = require('../models/userModel');
-const Product = require('../models/productModel'); // <<< IMPORTANT si populate est nécessaire
+const Product = require('../models/productModel');
+
 
 // Helper pour messages
 function setFlashMessage(req, type, message) {
     if (req.flash) { req.flash(type, message); }
     else { req.session.messageType = type; req.session.message = message; }
-    console.log(`DEBUG: Message set (${type}): ${message}`);
+    console.log(`Message set (${type}): ${message}`);
 }
 
-// --- showCart (Attend et PASSE l'objet cart) ---
-exports.showCart = async (req, res) => { // Async au cas où on doit peupler plus tard
-    console.log("INFO: Accès showCart");
+exports.showCart = async (req, res) => { // Async au cas ou on doit peupler plus tard
+    console.log("Accès showCart");
     try {
         // Initialise/Récupère l'OBJET cart de la session { items: [{productId, name, ...}], totalPrice }
         let cart = { items: [], totalPrice: 0 };
@@ -25,9 +21,9 @@ exports.showCart = async (req, res) => { // Async au cas où on doit peupler plu
         // Recalcule total (sécurité, même si déjà en session)
         let calculatedTotal = 0;
         cart.items.forEach(item => { calculatedTotal += (parseFloat(item.price) || 0) * (parseInt(item.quantity, 10) || 0); });
-        cart.totalPrice = parseFloat(calculatedTotal.toFixed(2)); // Assure que le total est correct
+        cart.totalPrice = parseFloat(calculatedTotal.toFixed(2)); // S'assure que le total est correct
 
-        console.log('--- DEBUG: Panier OBJET pour vue showCart ---');
+        console.log('Panier OBJET pour vue showCart');
         console.log(JSON.stringify(cart, null, 2)); // Contient déjà les détails
 
         // Gestion message
@@ -37,23 +33,22 @@ exports.showCart = async (req, res) => { // Async au cas où on doit peupler plu
 
         // >>> Passe l'OBJET cart entier à la vue <<<
         res.render('cart', {
-            cart: cart, // Passe l'objet { items: [...], totalPrice: ... }
+            cart: cart, // Passe l'objet { items: ..., totalPrice: ... }
             message: messageText,
             messageClass: messageClass
-            // PAS de variable 'total' séparée
         });
 
     } catch(error) {
-        console.error("ERREUR showCart:", error);
+        console.error("Erreur showCart:", error);
         setFlashMessage(req, 'error', 'Erreur affichage panier.');
         res.redirect('/');
     }
 };
 
-// --- removeFromCart (Utilise Objet Session, décrémente/supprime) ---
+// removeFromCart (Utilise Objet Session, décrémente/supprime) 
 exports.removeFromCart = async (req, res) => {
     const productIdToRemove = req.params.id; // ID produit à retirer/décrémenter
-    console.log(`INFO: remove/decrement ID: ${productIdToRemove}`);
+    console.log(`remove/decrement ID: ${productIdToRemove}`);
 
     // Vérifie structure OBJET session
     if (!req.session.cart || typeof req.session.cart !== 'object' || !Array.isArray(req.session.cart.items)) {
@@ -80,7 +75,7 @@ exports.removeFromCart = async (req, res) => {
         req.session.cart.items.forEach(it => { calculatedTotal += (parseFloat(it.price) || 0) * (parseInt(it.quantity, 10) || 0); });
         req.session.cart.totalPrice = parseFloat(calculatedTotal.toFixed(2));
 
-        console.log('--- DEBUG: Panier OBJET SESSION APRÈS remove/decrement ---');
+        console.log('Panier OBJET SESSION APRÈS remove/decrement');
         console.log(JSON.stringify(req.session.cart, null, 2));
         // Pas de màj BDD ici (fait au logout)
 
@@ -90,7 +85,7 @@ exports.removeFromCart = async (req, res) => {
 };
 
 
-// --- processCheckout (Utilise Objet Session) ---
+// processCheckout (Utilise Objet Session)
 exports.processCheckout = async (req, res) => {
     const userId = req.session.user?.id;
     if (!userId) { setFlashMessage(req, 'error','Connexion requise'); return res.redirect('/login'); }
@@ -102,13 +97,11 @@ exports.processCheckout = async (req, res) => {
     const cart = req.session.cart; // L'objet cart
     console.log(`INFO: Checkout user ${userId}`);
     try {
-        // SIMULATION COMMANDE
-        console.log("--- COMMANDE (Simulation) ---");
+        console.log("(Simulation)");
         console.log(`Utilisateur: ${userId}`);
         console.log("Articles:");
         cart.items.forEach(item => { console.log(`  - ${item.name} (ID: ${item.productId}) x ${item.quantity} @ ${item.price}€`); });
-        console.log(`Total: ${cart.totalPrice} €`); // Utilise cart.totalPrice
-        // FIN SIMULATION
+        console.log(`Total: ${cart.totalPrice} €`); 
 
         // Vide panier session (réinitialise l'objet)
         req.session.cart = { items: [], totalPrice: 0 };
@@ -117,12 +110,12 @@ exports.processCheckout = async (req, res) => {
         try {
             // Le schéma attend [{ product: ObjectId, quantity }] donc on sauvegarde un tableau vide
             await User.findByIdAndUpdate(userId, { cart: [] });
-            console.log(`INFO: Panier BDD vidé pour user ${userId}.`);
-        } catch (dbError) { console.error("ERREUR vidage BDD:", dbError); }
+            console.log(`Panier BDD vidé pour user ${userId}.`);
+        } catch (dbError) { console.error("Erreur vidage BDD:", dbError); }
 
         req.session.save(err => { setFlashMessage(req, 'message', 'Merci ! Commande simulée.'); return res.redirect('/'); });
     } catch (error) {
-        console.error("ERREUR GLOBALE checkout:", error);
+        console.error("Erreur checkout:", error);
         setFlashMessage(req, 'error', 'Erreur validation commande.');
         res.redirect('/cart');
      }
