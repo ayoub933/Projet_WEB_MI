@@ -57,7 +57,7 @@ Si il y a des problèmes de modules exécutez la commande suivante avec le bon n
 npm install nom_du_module
 ```
 
-Cela doit afficher normalement:
+Enfin le lancement du serveur doit afficher normalement:
 ```
 Serveur démarré sur http://localhost:3000
 Connecté à MongoDB`
