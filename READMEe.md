@@ -3,6 +3,7 @@
 ## Prérequis
 
 - [MongoDB Compass]
+- [MongoDB]
 - [Node.js]
 - `npm`
 
@@ -10,26 +11,35 @@
 
 ### 0. Regarder au préalable la vidéo pour des explications sur le lancement du site et ensuite aller au 1.
 
-### 1. Ouvrir MongoDB Compass
+### 1. Lancer le serveur MongoDB
+
+Assurez-vous que le service MongoDB est en cours d’exécution.  
+Si vous utilisez MongoDB localement, vous pouvez le démarrer avec :
+
+```bash
+mongod
+```
+
+### 2. Ouvrir MongoDB Compass
 
 Lancer MongoDB Compass sur votre machine.
 
-### 2. Créer la base de données
+### 3. Créer la base de données
 
 Créer une base de données appelée `vente_produit`.
 
-### 3. Créer les collections
+### 4. Créer les collections
 
 Dans la base `vente_produit`, créer les collections suivantes :
 
 - `users`
 - `products`
 
-### 4. Importer les données
+### 5. Importer les données
 
 Dans la collection `products`, importer le fichier `product.json` qui se trouve à la racine du projet.
 
-### 5. Lancer le serveur
+### 6. Lancer le serveur
 
 Depuis la racine du projet, ouvrir un terminal et exécuter :
 
