@@ -46,16 +46,17 @@ Depuis la racine du projet, ouvrir un terminal et exécuter :
 ```bash
 npm install
 ```
-Si il y a des problèmes de modules exécutez la commande suivante avec le bon nom de module:
-
-```bash
-npm install nom_du_module
-```
 Lancer cette commande pour lancer le serveur:
 
 ```bash
 node server.js
 ```
+Si il y a des problèmes de modules exécutez la commande suivante avec le bon nom de module:
+
+```bash
+npm install nom_du_module
+```
+
 Cela doit afficher normalement:
 ```
 Serveur démarré sur http://localhost:3000
