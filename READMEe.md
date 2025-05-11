@@ -1,0 +1,42 @@
+# Projet Vente de Produits
+
+## Prérequis
+
+- [MongoDB Compass]
+- [Node.js]
+- `npm`
+
+## Installation et lancement
+
+### 0. Regarder au préalable la vidéo pour des explications sur le lancement du site et ensuite aller au 1.
+
+### 1. Ouvrir MongoDB Compass
+
+Lancer MongoDB Compass sur votre machine.
+
+### 2. Créer la base de données
+
+Créer une base de données appelée `vente_produit`.
+
+### 3. Créer les collections
+
+Dans la base `vente_produit`, créer les collections suivantes :
+
+- `users`
+- `products`
+
+### 4. Importer les données
+
+Dans la collection `products`, importer le fichier `product.json` qui se trouve à la racine du projet.
+
+### 5. Lancer le serveur
+
+Depuis la racine du projet, ouvrir un terminal et exécuter :
+
+```bash
+node server.js
+
+Si il y a des problèmes de modules exécutez la commandes suivante avec le bon nom de module:
+
+```bash
+npm install nom_du_module
