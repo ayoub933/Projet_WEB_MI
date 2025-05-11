@@ -9,7 +9,7 @@
 
 ## Installation et lancement
 
-### 0. Regarder au préalable la vidéo pour des explications sur le lancement du site et ensuite aller au 1.
+### 0. Regarder au préalable la vidéo pour des explications sur le site et ensuite aller au 1.
 
 ### 1. Lancer le serveur MongoDB
 
@@ -44,11 +44,14 @@ Dans la collection `products`, importer le fichier `product.json` qui se trouve 
 Depuis la racine du projet, ouvrir un terminal et exécuter :
 
 ```bash
-node server.js
+npm install
 ```
-
-Si il y a des problèmes de modules exécutez la commandes suivante avec le bon nom de module:
+Si il y a des problèmes de modules exécutez la commande suivante avec le bon nom de module:
 
 ```bash
 npm install nom_du_module
+```
+
+```bash
+node server.js
 ```
