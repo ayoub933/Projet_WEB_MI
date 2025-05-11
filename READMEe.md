@@ -51,7 +51,14 @@ Si il y a des problèmes de modules exécutez la commande suivante avec le bon n
 ```bash
 npm install nom_du_module
 ```
+Lancer cette commande pour lancer le serveur:
 
 ```bash
 node server.js
 ```
+Cela doit afficher normalement:
+```
+Serveur démarré sur http://localhost:3000
+Connecté à MongoDB`
+```
+Il faut ensuite cliquer sur le lien et l'ouvrir dans votre navigateur pour arriver sur le site
